@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using GroupF.Models;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace GroupF.Controllers
 {
@@ -18,9 +20,20 @@ namespace GroupF.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            List<String> reservationList = new List<String>();
+            String apiResponse = new String("");
+            using (var httpClient = new HttpClient())
+            {
+                
+                using (var response = await httpClient.GetAsync("http://api.oceandrivers.com/v1.0/getEasyWind/EW013"))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    
+                }
+            }
+            return View(apiResponse);
         }
 
         public IActionResult Privacy()
