@@ -23,9 +23,8 @@ _UpgradeReport_Files/
 # Directories #
 ###############
 .vs/
-GroupF/.vs/
-GroupF/bin/
-GroupF/obj/
+bin/
+obj/
 TestResults/
 ###################
 # Web publish log #
