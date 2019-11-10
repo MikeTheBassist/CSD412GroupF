@@ -1,0 +1,238 @@
+{
+    "response": {
+        "game_count": 311,
+        "games": [
+            {
+                "appid": 70,
+                "name": "Half-Life",
+                "playtime_forever": 0,
+                "img_icon_url": "95be6d131fc61f145797317ca437c9765f24b41c",
+                "img_logo_url": "6bd76ff700a8c7a5460fbae3cf60cb930279897d",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 280,
+                "name": "Half-Life: Source",
+                "playtime_forever": 10,
+                "img_icon_url": "b4f572a6cc5a6a84ae84634c31414b9123d2f26b",
+                "img_logo_url": "a612dd944b768e55389140298dcfda2165db8ced",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 360,
+                "name": "Half-Life Deathmatch: Source",
+                "playtime_forever": 0,
+                "img_icon_url": "40b8a62efff5a9ab356e5c56f5c8b0532c8e1aa3",
+                "img_logo_url": "9a5b7119d4e8977fffcd370d3c24036be7cee904",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 1630,
+                "name": "Disciples II: Rise of the Elves",
+                "playtime_forever": 0,
+                "img_icon_url": "ad210204ded2924e202d10ddcdf21881127a8f6a",
+                "img_logo_url": "2682ab5134e19136db9998a54eb3d7ef7ed3e404",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 1640,
+                "name": "Disciples II: Gallean's Return",
+                "playtime_forever": 0,
+                "img_icon_url": "ad210204ded2924e202d10ddcdf21881127a8f6a",
+                "img_logo_url": "2682ab5134e19136db9998a54eb3d7ef7ed3e404",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 2100,
+                "name": "Dark Messiah of Might & Magic Single Player",
+                "playtime_forever": 301,
+                "img_icon_url": "5a08cd17d14ccb07a14f316dfa222b18a20960fd",
+                "img_logo_url": "02f650a6fe9645c6770adc7212d9879fdb1c6062",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 2130,
+                "name": "Dark Messiah of Might & Magic Multi-Player",
+                "playtime_forever": 0,
+                "img_icon_url": "5a08cd17d14ccb07a14f316dfa222b18a20960fd",
+                "img_logo_url": "d796edc2a9efe813351827a73b69e44e8b9c107a",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 3830,
+                "name": "Psychonauts",
+                "playtime_forever": 101,
+                "img_icon_url": "460b6471db7d83ee6943c1a87f7a9f2898634952",
+                "img_logo_url": "b361ab26b2c47d4abd11be0ebd3d6b675512ec1b",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 3910,
+                "name": "Sid Meier's Civilization III: Complete",
+                "playtime_forever": 17,
+                "img_icon_url": "9cc953317dabd7b8e39690472872b37104b5e625",
+                "img_logo_url": "35361ed1c0f896ef34f0a42563b5d2dfb9e634a5",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 3920,
+                "name": "Sid Meier's Pirates!",
+                "playtime_forever": 0,
+                "img_icon_url": "eeb9384067131b98cd71308aeded180dd9538951",
+                "img_logo_url": "cffb2b01c41681c3f74d76d83926d4b4a1e66890",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 3480,
+                "name": "Peggle Deluxe",
+                "playtime_forever": 204,
+                "img_icon_url": "427a98a549c3813e13b4062300709000599817b0",
+                "img_logo_url": "ddc060ce453b7cfa8c82ba2abc321e1b6110fd4e",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 6910,
+                "name": "Deus Ex: Game of the Year Edition",
+                "playtime_forever": 28,
+                "img_icon_url": "03c8e5e89d83c536b44798e77ead5d813103991f",
+                "img_logo_url": "4b9b2932405def5c3b4053e0b801b01d04965bf6",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 6920,
+                "name": "Deus Ex: Invisible War",
+                "playtime_forever": 0,
+                "img_icon_url": "8feb3c4e692882dbd1f30f3a8bfe89b9928c68c1",
+                "img_logo_url": "ac3aa418680fb52a05f8d91c79ac3f86fea11732",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 6980,
+                "name": "Thief: Deadly Shadows",
+                "playtime_forever": 0,
+                "img_icon_url": "d396bd55b366909ffda529158fd91513e4098a53",
+                "img_logo_url": "609345e7b64f268b72c01d8545cac9c23e54e8a2",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 2400,
+                "name": "The Ship",
+                "playtime_forever": 0,
+                "img_icon_url": "1d17a5d3d7da68eb317d848727ea235790e1d8a4",
+                "img_logo_url": "2b19a255140350735cf8461f6e893452e1eae95e",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 2420,
+                "name": "The Ship Single Player",
+                "playtime_forever": 0,
+                "img_icon_url": "683c3b48b4a8c586d0f143765502383cc8f07ac6",
+                "img_logo_url": "38d863d8a2a44555693dbcc499e3557531a1bb19",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 2430,
+                "name": "The Ship Tutorial",
+                "playtime_forever": 0,
+                "img_icon_url": "683c3b48b4a8c586d0f143765502383cc8f07ac6",
+                "img_logo_url": "38d863d8a2a44555693dbcc499e3557531a1bb19",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 8000,
+                "name": "Tomb Raider: Anniversary",
+                "playtime_forever": 595,
+                "img_icon_url": "13243b33c45bbde67ed6538641173e556548aac3",
+                "img_logo_url": "8b05ccbaa0891984239414b0fdfbb6b5b4590022",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 4540,
+                "name": "Titan Quest",
+                "playtime_forever": 612,
+                "img_icon_url": "d59f857aed0d38c69960a9d80e3d23e0863f4e01",
+                "img_logo_url": "e82186f6efe8d5d593c2fb1b57f8b1e056e6d82e",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 4550,
+                "name": "Titan Quest: Immortal Throne",
+                "playtime_forever": 17112,
+                "img_icon_url": "e06510f40941e9ac62688d34a57c293594049274",
+                "img_logo_url": "6b92b036480303ed864c4ac3d85a6700aa49c963",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            },
+            {
+                "appid": 475150,
+                "name": "Titan Quest Anniversary Edition",
+                "playtime_forever": 32,
+                "img_icon_url": "be3384e7936f548303c77ee2abc4c9026285f554",
+                "img_logo_url": "0d487100eb46ae08f9be7a8e2e09486511819bdd",
+                "has_community_visible_stats": true,
+                "playtime_windows_forever": 0,
+                "playtime_mac_forever": 0,
+                "playtime_linux_forever": 0
+            }
+        ]
+    }
+}

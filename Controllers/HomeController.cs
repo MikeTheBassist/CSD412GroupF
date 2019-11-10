@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Collections;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using GroupF.Models;
 using System.Net.Http;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace GroupF.Controllers
 {
@@ -25,34 +28,55 @@ namespace GroupF.Controllers
         public async Task<IActionResult> Index()
         {
 
-            //// until I figure out how to securely keep an api key in the repo, this variable is a placeholder of sorts.  
-            //String apiKey = "Empty";
-            //List<String> reservationList = new List<String>();
-            //String apiResponse = new String("");
-            //var httpClient = new HttpClient();
+            
+            // until I figure out how to securely keep an api key in the repo, this variable is a placeholder of sorts.  
+            String apiKey = "ENTER KEY HERE";
+
+            String apiResponse = new String("");
+
+            var httpClient = new HttpClient();
+            GameInfo testGame = new GameInfo();
+            String testString = "{\"appid\": 70,\"name\": \"Half-Life\",\"playtime_forever\": 0,\"img_icon_url\": \"95be6d131fc61f145797317ca437c9765f24b41c\",\"img_logo_url\": \"6bd76ff700a8c7a5460fbae3cf60cb930279897d\",\"has_community_visible_stats\": true,\"playtime_windows_forever\": 0,\"playtime_mac_forever\": 0,\"playtime_linux_forever\": 0}";
+
+            //// test JsonConvert Deserializer
+            GameInfo test = JsonConvert.DeserializeObject<GameInfo>(testString);
+
             //var userNameInfo = await httpClient.GetAsync("http://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=" + apiKey + "&vanityurl=https://steamcommunity.com/id/AnotherHumanGod");
+
             //var userName = await userNameInfo.Content.ReadAsStringAsync();
-            //using (var response = await httpClient.GetAsync("http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key="+apiKey+"&include_appinfo=true&steamid=76561198919733346&format=json"))
-            //{
-            //    // read response as a String and parse to Json
-            //    apiResponse = await response.Content.ReadAsStringAsync();
-            //    var jsonFormatResponse = Json(apiResponse);
+            String queryString = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" + apiKey + "&include_appinfo=true&steamid=76561197993425790&format=json";
 
-            //    // test JsonConvert Deserializer
-            //    var json = JsonConvert.DeserializeObject(apiResponse);
+            using (var response = await httpClient.GetAsync(queryString))
+            {
+                // read response as a String and parse to Json
+                apiResponse = await response.Content.ReadAsStringAsync();
 
-            //    var jsonFormatResponse2 = Json(response);
+                //// test JsonConvert Deserializer
+                String gamesList = apiResponse.Split("[")[1];
 
-            //    return Ok(jsonFormatResponse);
-            //    //Dictionary<string, string> keyValuePairs = apiResponse.Split(',')
-            //    //.Select(value => value.Split(':'))
-            //    //.ToDictionary(pair => pair[0], pair => pair[1]);
+                String[] gamesListParsed = Regex.Split(gamesList, @"(?=[{])");
 
-            //    //foreach (var entry in keyValuePairs)
-            //    //{
-            //    //    Console.WriteLine(entry.Key.ToString() + " " + entry.Value.ToString());
-            //    //}
-            //}
+                List<GameInfo> allGames = new List<GameInfo>();
+
+                for(int i = 1; i < gamesListParsed.Length; i++)
+                {
+                    if(i != gamesListParsed.Length - 1)
+                    {
+                        string tempString = new string(gamesListParsed[i].TrimEnd(','));
+                        allGames.Add(JsonConvert.DeserializeObject<GameInfo>(tempString));
+                    }
+                    else
+                    {
+                        string tempString = new string(gamesListParsed[i].Substring(0, gamesListParsed[i].Length - 3));
+                        bool something = true;
+                        allGames.Add(JsonConvert.DeserializeObject<GameInfo>(tempString));
+                    }
+                    
+                }
+
+                return Ok("JESUS JONES");
+
+            }
 
             return View();
         }
