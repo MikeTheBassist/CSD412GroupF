@@ -46,16 +46,15 @@ namespace GroupF.Controllers
 
             // until I figure out how to securely keep an api key in the repo, this variable is a placeholder of sorts.  
             // get a Steam API Key using your login and 127.0.0.1 as your Domain Name: steamcommunity.com/dev/apikey
-            String apiKey = "INSERT API KEY HERE";
+            String apiKey = "INSERT KEY HERE";
 
             // create new HttpClient for sending and receiving information via Http protocol
             var httpClient = new HttpClient();
 
-            String userName = "INSERT USER NAME HERE";
+            String userName = "INSERT STEAM USERNAME";
 
             // Using my Steam ID as a placeholder, this will be replaced by the "getUserNameFromId" method once it's written...
             long steamId = await getSteamIdFromUserName(apiKey, userName, httpClient);
-
             List<GameInfo> gameList = await parseGetOwnedGamesAsync(apiKey, steamId, httpClient);
 
             ViewData["gameList"] = gameList;
