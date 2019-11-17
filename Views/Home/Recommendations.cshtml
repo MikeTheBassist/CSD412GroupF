@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewData["Title"] = "Recommendations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <h1>Recommendations</h1>
+
+    @model List<GameInfo>
+        @{ var viewGamesList = (List<GameInfo>)ViewData["gameList"];
+
+
+
+            foreach (var game in viewGamesList)
+            {
+                String thumbLink = "http://media.steampowered.com/steamcommunity/public/images/apps/" + game.appid + "/" + @game.img_logo_url + ".jpg";
+
+                <div class="card w-50 m-2">
+                    <img src=@thumbLink class="card-img" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">@game.name</h5>
+                        <p class="card-text">Hours played: @Math.Round((double)game.playtime_forever/60,1)</p>
+                        <img class="card-img" href=@thumbLink>
+                    </div>
+                </div>
+            }
+        }
+
+</div>

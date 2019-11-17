@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,6 +8,7 @@ namespace GroupF.Models
 {
     public class GameInfo
     {
+        [Key]
         public int appid { get; set; }
         public string name { get; set; }
         public int playtime_forever { get; set; }

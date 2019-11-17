@@ -27,6 +27,13 @@ namespace GroupF.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            // TODO:  Add a 'login with Steam' interface or just have a text box you put your Steam Username into that gets passed to the Recommendations action
+
+            return View();
+        }
+
+        public async Task<IActionResult> Recommendations()
+        {
             // Create a test GameInfo object using Half Life data for testing view creation
             GameInfo gameTest = new GameInfo();
 
@@ -44,18 +51,16 @@ namespace GroupF.Controllers
             // create new HttpClient for sending and receiving information via Http protocol
             var httpClient = new HttpClient();
 
+            String userName = "INSERT USER NAME HERE";
+
             // Using my Steam ID as a placeholder, this will be replaced by the "getUserNameFromId" method once it's written...
-            long steamId = 76561197993425790;
+            long steamId = await getSteamIdFromUserName(apiKey, userName, httpClient);
 
             List<GameInfo> gameList = await parseGetOwnedGamesAsync(apiKey, steamId, httpClient);
 
-            //TODO: Write method for getting SteamID from username.
-            //var userNameInfo = await httpClient.GetAsync("http://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=" + apiKey + "&vanityurl=https://steamcommunity.com/id/AnotherHumanGod");
+            ViewData["gameList"] = gameList;
 
-            //var userName = await userNameInfo.Content.ReadAsStringAsync();
-
-
-            return View();
+            return View(gameList);
         }
 
         public IActionResult Privacy()
@@ -63,47 +68,71 @@ namespace GroupF.Controllers
             return View();
         }
 
-
-        public async Task<String> getUserNameFromId(long id)
-        {
-            String fakeName = "SuperRadical";
-
-            return fakeName;
-        }
         public async Task<List<GameInfo>> parseGetOwnedGamesAsync(String apiKey, long steamId, HttpClient client)
         {
 
-            String queryString = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" + apiKey + "&include_appinfo=true&steamid="+steamId+"&format=json";
+            String queryString = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" + apiKey + "&include_appinfo=true&steamid=" + steamId + "&format=json";
 
             using (var response = await client.GetAsync(queryString))
             {
                 // read response as a String and parse to Json
                 String apiResponse = await response.Content.ReadAsStringAsync();
 
-                //// test JsonConvert Deserializer
-                String gamesList = apiResponse.Split("[")[1];
-
-                String[] gamesListParsed = Regex.Split(gamesList, @"(?=[{])");
-
-                List<GameInfo> allGames = new List<GameInfo>();
-
-                for (int i = 1; i < gamesListParsed.Length; i++)
+                if(response.IsSuccessStatusCode)
                 {
-                    if (i != gamesListParsed.Length - 1)
+                    //// test JsonConvert Deserializer
+                    dynamic parsedResponse = JsonConvert.DeserializeObject<dynamic>(apiResponse);
+
+                    List<GameInfo> allGames = new List<GameInfo>();
+
+                    if (parsedResponse.response.game_count >= 1)
                     {
-                        string tempString = new string(gamesListParsed[i].TrimEnd(','));
-                        allGames.Add(JsonConvert.DeserializeObject<GameInfo>(tempString));
+                        Console.WriteLine("Games were found.");
+
+                        foreach (var game in parsedResponse.response.games)
+                        {
+                            GameInfo tempGame = JsonConvert.DeserializeObject<GameInfo>(game.ToString());
+
+                            allGames.Add(tempGame);
+                        }
                     }
                     else
                     {
-                        string tempString = new string(gamesListParsed[i].Substring(0, gamesListParsed[i].Length - 3));
-                        allGames.Add(JsonConvert.DeserializeObject<GameInfo>(tempString));
+                        Console.WriteLine("No games found or profile is marked private.");
                     }
 
+                    return allGames;
                 }
+                else
+                {
+                    Console.WriteLine("Response was null, check UserName and API key");
+                    return null;
+                }
+            }
+        }
 
-                return allGames;
+        public async Task<long> getSteamIdFromUserName(String apiKey, String userName, HttpClient client)
+        {
 
+            String queryString = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=" + apiKey + "&vanityUrl=" + userName;
+
+            using (var response = await client.GetAsync(queryString))
+            {
+                // read response as a String and parse to Json
+                String apiResponse = await response.Content.ReadAsStringAsync();
+                
+                dynamic parsedResponse = JsonConvert.DeserializeObject<dynamic>(apiResponse);
+
+                if(parsedResponse.response.success == 1)
+                {
+                    long userId = parsedResponse.response.steamid;
+                    return userId;
+                }
+                else
+                {
+                    Console.WriteLine("No Steam user with username: " + userName + " found.");
+                    return 0;
+                }
             }
         }
 
