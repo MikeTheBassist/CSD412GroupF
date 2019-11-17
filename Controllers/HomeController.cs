@@ -46,18 +46,24 @@ namespace GroupF.Controllers
 
             // until I figure out how to securely keep an api key in the repo, this variable is a placeholder of sorts.  
             // get a Steam API Key using your login and 127.0.0.1 as your Domain Name: steamcommunity.com/dev/apikey
-            String apiKey = "INSERT STEAM API KEY";
+            String apiKey = "STEAM API KEY HERE";
+
 
             // create new HttpClient for sending and receiving information via Http protocol
             var httpClient = new HttpClient();
 
-            String userName = "INSERT STEAM USERNAME";
+            String userName = "STEAM USERNAME HERE";
 
             // Using my Steam ID as a placeholder, this will be replaced by the "getUserNameFromId" method once it's written...
 
             long steamId = await getSteamIdFromUserName(apiKey, userName, httpClient);
-            
+
             List<GameInfo> gameList = await parseGetOwnedGamesAsync(apiKey, steamId, httpClient);
+
+            if(steamId == 0 || gameList.Count == 0 || gameList == null)
+            {
+                return View();
+            }
 
             ViewData["gameList"] = gameList;
 
@@ -122,18 +128,27 @@ namespace GroupF.Controllers
                 // read response as a String and parse to Json
                 String apiResponse = await response.Content.ReadAsStringAsync();
                 
-                dynamic parsedResponse = JsonConvert.DeserializeObject<dynamic>(apiResponse);
-
-                if(parsedResponse.response.success == 1)
+                if(response.IsSuccessStatusCode)
                 {
-                    long userId = parsedResponse.response.steamid;
-                    return userId;
+                    dynamic parsedResponse = JsonConvert.DeserializeObject<dynamic>(apiResponse);
+
+                    if (parsedResponse != null && parsedResponse.response.success == 1)
+                    {
+                        long userId = parsedResponse.response.steamid;
+                        return userId;
+                    }
+                    else
+                    {
+                        Console.WriteLine("No Steam user with username: " + userName + " found.");
+                        return 0;
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("No Steam user with username: " + userName + " found.");
+                    Console.WriteLine("Api Key or Steam Username incorrect");
                     return 0;
                 }
+    
             }
         }
 
