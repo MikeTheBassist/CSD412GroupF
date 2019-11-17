@@ -29,10 +29,12 @@ namespace GroupF.Controllers
         {
             // TODO:  Add a 'login with Steam' interface or just have a text box you put your Steam Username into that gets passed to the Recommendations action
 
+            
+
             return View();
         }
 
-        public async Task<IActionResult> Recommendations()
+        public async Task<IActionResult> Recommendations(String steamUserName)
         {
             // Create a test GameInfo object using Half Life data for testing view creation
             GameInfo gameTest = new GameInfo();
@@ -46,13 +48,14 @@ namespace GroupF.Controllers
 
             // until I figure out how to securely keep an api key in the repo, this variable is a placeholder of sorts.  
             // get a Steam API Key using your login and 127.0.0.1 as your Domain Name: steamcommunity.com/dev/apikey
-            String apiKey = "STEAM API KEY HERE";
+
+            String apiKey = "STEAM API KEY";
 
 
             // create new HttpClient for sending and receiving information via Http protocol
             var httpClient = new HttpClient();
 
-            String userName = "STEAM USERNAME HERE";
+            String userName = steamUserName;
 
             // Using my Steam ID as a placeholder, this will be replaced by the "getUserNameFromId" method once it's written...
 

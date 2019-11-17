@@ -26,16 +26,23 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Recommendations">Recommendations</a>
-                        </li>
+
                     </ul>
+
                 </div>
+                @using (Html.BeginForm())
+                {
+                    <div class="text-white-50">Steam Username: </div>
+                    <input type="text" name="steamUserName" />
+                    <input type="submit" asp-controller="Home" asp-action="Recommendations" />
+                }
             </div>
         </nav>
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+
+
             @RenderBody()
         </main>
     </div>
