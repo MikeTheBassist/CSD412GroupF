@@ -34,7 +34,7 @@ namespace GroupF.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Recommendations(String steamUserName)
+        public async Task<IActionResult> Recommendations(String steamUserName, String steamAPIKey)
         {
             // Create a test GameInfo object using Half Life data for testing view creation
             GameInfo gameTest = new GameInfo();
@@ -49,7 +49,7 @@ namespace GroupF.Controllers
             // until I figure out how to securely keep an api key in the repo, this variable is a placeholder of sorts.  
             // get a Steam API Key using your login and 127.0.0.1 as your Domain Name: steamcommunity.com/dev/apikey
 
-            String apiKey = "STEAM API KEY";
+            String apiKey = steamAPIKey;
 
 
             // create new HttpClient for sending and receiving information via Http protocol
