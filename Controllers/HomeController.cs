@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace GroupF.Controllers
 {
@@ -29,7 +30,7 @@ namespace GroupF.Controllers
         {
             // TODO:  Add a 'login with Steam' interface or just have a text box you put your Steam Username into that gets passed to the Recommendations action
 
-            
+
 
             return View();
         }
@@ -48,14 +49,15 @@ namespace GroupF.Controllers
 
             // until I figure out how to securely keep an api key in the repo, this variable is a placeholder of sorts.  
             // get a Steam API Key using your login and 127.0.0.1 as your Domain Name: steamcommunity.com/dev/apikey
-
             String apiKey = steamAPIKey;
+
 
 
             // create new HttpClient for sending and receiving information via Http protocol
             var httpClient = new HttpClient();
 
             String userName = steamUserName;
+            ViewData["steamUserName"] = steamUserName;
 
             // Using my Steam ID as a placeholder, this will be replaced by the "getUserNameFromId" method once it's written...
 
@@ -63,9 +65,15 @@ namespace GroupF.Controllers
 
             List<GameInfo> gameList = await parseGetOwnedGamesAsync(apiKey, steamId, httpClient);
 
-            if(steamId == 0 || gameList.Count == 0 || gameList == null)
+            if (steamId == 0 || gameList.Count == 0 || gameList == null)
             {
                 return View();
+            }
+            else
+            {
+                gameList = gameList.OrderByDescending(o => o.playtime_forever).ToList();
+
+                gameList = await getAppInfoFromListAsync(gameList, httpClient);
             }
 
             ViewData["gameList"] = gameList;
@@ -88,7 +96,7 @@ namespace GroupF.Controllers
                 // read response as a String and parse to Json
                 String apiResponse = await response.Content.ReadAsStringAsync();
 
-                if(response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
                 {
                     //// test JsonConvert Deserializer
                     dynamic parsedResponse = JsonConvert.DeserializeObject<dynamic>(apiResponse);
@@ -130,8 +138,8 @@ namespace GroupF.Controllers
             {
                 // read response as a String and parse to Json
                 String apiResponse = await response.Content.ReadAsStringAsync();
-                
-                if(response.IsSuccessStatusCode)
+
+                if (response.IsSuccessStatusCode)
                 {
                     dynamic parsedResponse = JsonConvert.DeserializeObject<dynamic>(apiResponse);
 
@@ -151,8 +159,48 @@ namespace GroupF.Controllers
                     Console.WriteLine("Api Key or Steam Username incorrect");
                     return 0;
                 }
-    
+
             }
+        }
+
+        public async Task<List<GameInfo>> getAppInfoFromListAsync(List<GameInfo> allGames, HttpClient client)
+        {
+            String queryString;
+            StringBuilder str = new StringBuilder();
+
+            for (int i = 0; i < 20; i++)
+            {
+                str.Append(allGames[i].appid.ToString());
+                if (i != 19)
+                {
+                    str.Append(", ");
+                }
+                else
+                {
+                    // str.Append();
+                }
+            }
+            queryString = "http://store.steampowered.com/api/appdetails?appids=" + str;
+            
+            using (var response = await client.GetAsync(queryString))
+            {
+                // read response as a String and parse to Json
+                String apiResponse = await response.Content.ReadAsStringAsync();
+                //https://store.steampowered.com/api/appdetails/?appids=311210&cc=gb&filters=metacritic
+                //https://store.steampowered.com/api/appdetails/?appids=311210&cc=gb&filters=genres
+                if (response.IsSuccessStatusCode)
+                {
+                    dynamic parsedResponse = JsonConvert.DeserializeObject<dynamic>(apiResponse);
+                    var something = parsedResponse.data;
+                }
+                else
+                {
+
+
+                }
+
+            }
+            return null;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
