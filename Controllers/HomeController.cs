@@ -73,7 +73,7 @@ namespace GroupF.Controllers
             {
                 gameList = gameList.OrderByDescending(o => o.playtime_forever).ToList();
 
-                gameList = await getAppInfoFromListAsync(gameList, httpClient);
+                // gameList = await getAppInfoFromListAsync(gameList, httpClient);
             }
 
             ViewData["gameList"] = gameList;
