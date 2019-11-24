@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using GroupF.Models;
 
 namespace GroupF.Data
 {
@@ -12,5 +13,6 @@ namespace GroupF.Data
             : base(options)
         {
         }
+        public DbSet<GroupF.Models.Game> Game { get; set; }
     }
 }

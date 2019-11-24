@@ -1,0 +1,22 @@
+﻿@model GroupF.Models.GameInfoPlus
+
+@{ 
+    String thumbLink = "http://media.steampowered.com/steamcommunity/public/images/apps/" + Model.appid + "/" + Model.img_logo_url + ".jpg";
+}
+
+<div class="card mb-3 bg-dark border-secondary">
+    <div class="row no-gutters">
+        <div class="col-md-4">
+            <img src=@thumbLink class="card-img" alt=@Model.name+" image" >
+        </div>
+        <div class="col-md-8 card-body pl-5">
+            <h4 class="card-title text-white">@Model.name</h4>
+            <p class="card-text text-white d-inline mr-5">Hours played: @Math.Round((double)Model.playtime_forever / 60, 1)</p>
+            <p class="card-text text-white d-inline">Genre: @Model.genre</p>
+            <p class="card-text text-white">Rating: @Model.rating</p>
+        </div>
+    </div>
+</div>
+
+
+

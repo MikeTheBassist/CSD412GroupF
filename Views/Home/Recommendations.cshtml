@@ -8,16 +8,16 @@
     <h1 class="text-xl-center text-white-50">Recommendations</h1>
 
 
-    @model List<GameInfo>
+    @model List<GameInfoPlus>
     @{
         if (ViewData["gameList"] != null)
         {
-            var viewGamesList = (List<GameInfo>)ViewData["gameList"];
+            var viewGamesList = (List<GameInfoPlus>)ViewData["gameList"];
 
             foreach (var game in viewGamesList)
             {
 
-                @await Html.PartialAsync("~/Views/GameInfo/_DisplayGameInfo.cshtml", game)
+                @await Html.PartialAsync("~/Views/GameInfoPlus/_DisplayGameInfoPlus.cshtml", game)
 
             }
         }

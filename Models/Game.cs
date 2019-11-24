@@ -2,14 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using System.ComponentModel.DataAnnotations;
 namespace GroupF.Models
 {
     public class Game
     {
-        public int GameId { get; set; }
-        public string Name { get; set; }
-        public DateTime PurchaseDate { get; set; }
-        public float TimePlayed { get; set; }
+        [Key]
+        public int appid { get; set; }
+        public int rating { get; set; }
+        public string genre { get; set; }
+
+        public Game()
+        {
+
+        }
+        public Game(GameInfo game, int rating, string genre)
+        {
+            this.appid = game.appid;
+            this.rating = rating;
+            this.genre = genre;
+        }
     }
 }

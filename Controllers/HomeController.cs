@@ -13,15 +13,19 @@ using System.Text.RegularExpressions;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using System.Text;
+using GroupF.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace GroupF.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
+            _context = context;
             _logger = logger;
         }
 
@@ -38,14 +42,14 @@ namespace GroupF.Controllers
         public async Task<IActionResult> Recommendations(String steamUserName, String steamAPIKey)
         {
             // Create a test GameInfo object using Half Life data for testing view creation
-            GameInfo gameTest = new GameInfo();
+            //GameInfo gameTest = new GameInfo();
 
             // Json representing Half Life data
-            String testString = "{\"appid\": 70,\"name\": \"Half-Life\",\"playtime_forever\": 100,\"img_icon_url\":" +
-                " \"95be6d131fc61f145797317ca437c9765f24b41c\",\"img_logo_url\": \"6bd76ff700a8c7a5460fbae3cf60cb930279897d\",\"has_community_visible_stats\": " +
-                "true,\"playtime_windows_forever\": 0,\"playtime_mac_forever\": 0,\"playtime_linux_forever\": 0}";
+            //String testString = "{\"appid\": 70,\"name\": \"Half-Life\",\"playtime_forever\": 100,\"img_icon_url\":" +
+           //     " \"95be6d131fc61f145797317ca437c9765f24b41c\",\"img_logo_url\": \"6bd76ff700a8c7a5460fbae3cf60cb930279897d\",\"has_community_visible_stats\": " +
+             //   "true,\"playtime_windows_forever\": 0,\"playtime_mac_forever\": 0,\"playtime_linux_forever\": 0}";
 
-            gameTest = JsonConvert.DeserializeObject<GameInfo>(testString);
+            //gameTest = JsonConvert.DeserializeObject<GameInfo>(testString);
 
             // until I figure out how to securely keep an api key in the repo, this variable is a placeholder of sorts.  
             // get a Steam API Key using your login and 127.0.0.1 as your Domain Name: steamcommunity.com/dev/apikey
@@ -64,21 +68,33 @@ namespace GroupF.Controllers
             long steamId = await getSteamIdFromUserName(apiKey, userName, httpClient);
 
             List<GameInfo> gameList = await parseGetOwnedGamesAsync(apiKey, steamId, httpClient);
+            
+            List<GameInfoPlus> gameInfoPlusList = new List<GameInfoPlus>();
 
-            if (steamId == 0 || gameList.Count == 0 || gameList == null)
+            addGameInfoToDatabase(gameList);
+
+            foreach (var game in gameList)
+            {
+                Game dbGame = _context.Game.Find(game.appid);
+                if (dbGame != null)
+                {
+                    gameInfoPlusList.Add(new GameInfoPlus(game, dbGame)); //creating GameInfoPlus objects out of Game objects from the database and GameInfo Objects from the api query
+                }
+            }
+            if (steamId == 0 || gameInfoPlusList.Count == 0 || gameInfoPlusList == null)
             {
                 return View();
             }
             else
             {
-                gameList = gameList.OrderByDescending(o => o.playtime_forever).ToList();
+                gameInfoPlusList = gameInfoPlusList.OrderByDescending(o => o.playtime_forever).ToList();
 
                 // gameList = await getAppInfoFromListAsync(gameList, httpClient);
             }
 
-            ViewData["gameList"] = gameList;
+            ViewData["gameList"] = gameInfoPlusList;
 
-            return View(gameList);
+            return View(gameInfoPlusList);
         }
 
         public IActionResult Privacy()
@@ -201,6 +217,23 @@ namespace GroupF.Controllers
 
             }
             return null;
+        }
+
+        private void addGameInfoToDatabase(List<GameInfo> gameList)
+        {
+            List<Game> dbGameList = _context.Game.ToList();
+            foreach (var game in gameList)
+            {
+                if (!dbGameList.Any(x => x.appid == game.appid))
+                {
+                    //idk maybe find genre and rating here if we don't have it?
+                    _context.Game.Add(new Game(game, 5, "action"));
+                }
+            }
+            _context.Database.OpenConnection();
+            _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Game ON");
+            _context.SaveChanges();
+            _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Game OFF");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
