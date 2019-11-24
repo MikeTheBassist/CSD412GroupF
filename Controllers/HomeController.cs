@@ -232,7 +232,7 @@ namespace GroupF.Controllers
                 if (!dbGameList.Any(x => x.appid == game.appid))
                 {
                     //idk maybe find genre and rating here if we don't have it?
-                    _context.Game.Add(new Game(game, 5, "action"));
+                    _context.Game.Add(new Game(game, 5, "action"));//just putting in filler info for now
                 }
             }
             _context.Database.OpenConnection();
