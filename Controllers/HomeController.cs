@@ -71,17 +71,8 @@ namespace GroupF.Controllers
             
             List<GameInfoPlus> gameInfoPlusList = new List<GameInfoPlus>();
 
-            AddGameInfoToDatabase(gameList);
-
-            foreach (var game in gameList)
-            {
-                Game dbGame = _context.Game.Find(game.appid);
-                if (dbGame != null)
-                {
-                    gameInfoPlusList.Add(new GameInfoPlus(game, dbGame)); //creating GameInfoPlus objects out of Game objects from the database and GameInfo Objects from the api query
-                }
-            }
-            if (steamId == 0 || gameInfoPlusList.Count == 0 || gameInfoPlusList == null)
+            
+            if (steamId == 0 || gameList.Count == 0 || gameList == null)
             {
                 return View();
             }
@@ -89,6 +80,16 @@ namespace GroupF.Controllers
             {
                 gameInfoPlusList = gameInfoPlusList.OrderByDescending(o => o.playtime_forever).ToList();
 
+                AddGameInfoToDatabase(gameList);
+
+                foreach (var game in gameList)
+                {
+                    Game dbGame = _context.Game.Find(game.appid);
+                    if (dbGame != null)
+                    {
+                        gameInfoPlusList.Add(new GameInfoPlus(game, dbGame)); //creating GameInfoPlus objects out of Game objects from the database and GameInfo Objects from the api query
+                    }
+                }
                 // gameList = await getAppInfoFromListAsync(gameList, httpClient);
             }
 
