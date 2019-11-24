@@ -65,13 +65,13 @@ namespace GroupF.Controllers
 
             // Using my Steam ID as a placeholder, this will be replaced by the "getUserNameFromId" method once it's written...
 
-            long steamId = await getSteamIdFromUserName(apiKey, userName, httpClient);
+            long steamId = await GetSteamIdFromUserName(apiKey, userName, httpClient);
 
-            List<GameInfo> gameList = await parseGetOwnedGamesAsync(apiKey, steamId, httpClient);
+            List<GameInfo> gameList = await ParseGetOwnedGamesAsync(apiKey, steamId, httpClient);
             
             List<GameInfoPlus> gameInfoPlusList = new List<GameInfoPlus>();
 
-            addGameInfoToDatabase(gameList);
+            AddGameInfoToDatabase(gameList);
 
             foreach (var game in gameList)
             {
@@ -94,7 +94,9 @@ namespace GroupF.Controllers
 
             ViewData["gameList"] = gameInfoPlusList;
 
+
             return View(gameInfoPlusList);
+
         }
 
         public IActionResult Privacy()
@@ -102,7 +104,7 @@ namespace GroupF.Controllers
             return View();
         }
 
-        public async Task<List<GameInfo>> parseGetOwnedGamesAsync(String apiKey, long steamId, HttpClient client)
+        public async Task<List<GameInfo>> ParseGetOwnedGamesAsync(String apiKey, long steamId, HttpClient client)
         {
 
             String queryString = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" + apiKey + "&include_appinfo=true&steamid=" + steamId + "&format=json";
@@ -145,7 +147,7 @@ namespace GroupF.Controllers
             }
         }
 
-        public async Task<long> getSteamIdFromUserName(String apiKey, String userName, HttpClient client)
+        public async Task<long> GetSteamIdFromUserName(String apiKey, String userName, HttpClient client)
         {
 
             String queryString = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=" + apiKey + "&vanityUrl=" + userName;
@@ -179,7 +181,7 @@ namespace GroupF.Controllers
             }
         }
 
-        public async Task<List<GameInfo>> getAppInfoFromListAsync(List<GameInfo> allGames, HttpClient client)
+        public async Task<List<GameInfo>> GetAppInfoFromListAsync(List<GameInfo> allGames, HttpClient client)
         {
             String queryString;
             StringBuilder str = new StringBuilder();
@@ -219,7 +221,7 @@ namespace GroupF.Controllers
             return null;
         }
 
-        private void addGameInfoToDatabase(List<GameInfo> gameList)
+        private void AddGameInfoToDatabase(List<GameInfo> gameList)
         {
             List<Game> dbGameList = _context.Game.ToList();
             foreach (var game in gameList)
