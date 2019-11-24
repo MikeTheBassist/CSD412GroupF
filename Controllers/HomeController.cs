@@ -78,7 +78,7 @@ namespace GroupF.Controllers
             }
             else
             {
-                gameInfoPlusList = gameInfoPlusList.OrderByDescending(o => o.playtime_forever).ToList();
+                
 
                 AddGameInfoToDatabase(gameList);
 
@@ -90,6 +90,8 @@ namespace GroupF.Controllers
                         gameInfoPlusList.Add(new GameInfoPlus(game, dbGame)); //creating GameInfoPlus objects out of Game objects from the database and GameInfo Objects from the api query
                     }
                 }
+
+                gameInfoPlusList = gameInfoPlusList.OrderByDescending(o => o.playtime_forever).ToList();
                 // gameList = await getAppInfoFromListAsync(gameList, httpClient);
             }
 
