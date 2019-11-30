@@ -12,7 +12,7 @@
         <div class="col-md-8 card-body pl-5">
             <h4 class="card-title text-white">@Model.name</h4>
             <p class="card-text text-white d-inline mr-5">Hours played: @Math.Round((double)Model.playtime_forever / 60, 1)</p>
-            <p class="card-text text-white d-inline">Genre: @Model.genre</p>
+            <p class="card-text text-white d-inline">Genre: @Model.genre.ToString()</p>
             <p class="card-text text-white">Rating: @Model.rating</p>
         </div>
     </div>

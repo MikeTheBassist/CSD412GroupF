@@ -11,7 +11,7 @@ namespace GroupF.Models
         public int appid { get; set; }
         public int rating { get; set; }
         public string genre { get; set; }
-
+        public DateTime updated { get; set; }
         public Game()
         {
 
@@ -21,6 +21,7 @@ namespace GroupF.Models
             this.appid = game.appid;
             this.rating = rating;
             this.genre = genre;
+            this.updated = DateTime.UtcNow;
         }
     }
 }

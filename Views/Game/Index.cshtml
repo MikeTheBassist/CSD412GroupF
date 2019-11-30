@@ -13,6 +13,9 @@
     <thead>
         <tr>
             <th>
+                Entry#
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.appid)
             </th>
             <th>
@@ -21,12 +24,22 @@
             <th>
                 @Html.DisplayNameFor(model => model.genre)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.updated)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
+        @{ 
+            var entry = 0;
+        }
 @foreach (var item in Model) {
+        entry++;
         <tr>
+            <td>
+                @entry
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.appid)
             </td>
@@ -35,6 +48,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.genre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.updated)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.appid">Edit</a>
