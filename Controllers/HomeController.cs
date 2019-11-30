@@ -87,7 +87,7 @@ namespace GroupF.Controllers
                 foreach (var game in gameList)
                 {
                     Game dbGame = _context.Game.Find(game.appid);
-                    if (dbGame != null)//get every game in the database that the player owns and we have information for
+                    if (dbGame != null && dbGame.rating >= 0)//get every game in the database that the player owns and we have information for
                     {
                         gameInfoPlusList.Add(new GameInfoPlus(game, dbGame)); //creating GameInfoPlus objects out of Game objects from the database and GameInfo Objects from the api query
                     }
@@ -95,6 +95,7 @@ namespace GroupF.Controllers
 
                 gameInfoPlusList = gameInfoPlusList.OrderBy(o => o.playtime_forever).ToList();
                 // gameList = await getAppInfoFromListAsync(gameList, httpClient);
+
             }
 
             ViewData["gameList"] = gameInfoPlusList;
@@ -291,8 +292,9 @@ namespace GroupF.Controllers
 
             string queryString = "https://store.steampowered.com/api/appdetails/?appids=" + game.appid + "&cc=gb&filters=metacritic,genres";
             var apiResponse = await client.GetAsync(queryString);
-            string genres = null;
+            string genre = null;
             int rating = -1;
+
             if (apiResponse != null && apiResponse.IsSuccessStatusCode)
             {
                 string response = await apiResponse.Content.ReadAsStringAsync();
@@ -302,30 +304,33 @@ namespace GroupF.Controllers
 
                 if (parsedResponse.success == true)
                 {
-                    if (parsedResponse.data.metacritic != null)
+                    if (parsedResponse.data.GetProperty("metacritic") != null)
                     {
                         rating = parsedResponse.data.metacritic.score;
                     }
-                    if (parsedResponse.data.genres != null)
+                    if (parsedResponse.data.GetProperty("genres") != null)
                     {
-                        genres = "";
-                        foreach (var genre in parsedResponse.data.genres)
+                        genre = "";
+                        foreach (var g in parsedResponse.data.genres)
                         {
-                            genres += genre.description + ",";
+                            genre += g.description + ",";
                         }
-                        genres = genres.Substring(0, genres.Length - 1);
+                        genre = genre.Substring(0, genre.Length - 1);
                     }
                 }
 
             }
 
-            if (genres == null)
+            if (genre == null)
             {
-                genres = "unknown";
+                genre = "unknown";
             }
 
-            return new Game(game, rating, genres);
+            return new Game(game, rating, genre);
         }
+
+
+      
 
     }
 
