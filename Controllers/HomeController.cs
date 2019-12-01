@@ -66,8 +66,8 @@ namespace GroupF.Controllers
             ViewData["steamUserName"] = steamUserName;
 
             // Using my Steam ID as a placeholder, this will be replaced by the "getUserNameFromId" method once it's written...
-            long steamId = 76561198084962721;
-            if (userName != null)
+            //long steamId = ;
+            //if (userName != null)
             steamId = await GetSteamIdFromUserName(apiKey, userName, httpClient);
             
             
