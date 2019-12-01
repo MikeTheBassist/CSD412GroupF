@@ -68,7 +68,7 @@ namespace GroupF.Controllers
             // Using my Steam ID as a placeholder, this will be replaced by the "getUserNameFromId" method once it's written...
             //long steamId = ;
             //if (userName != null)
-            steamId = await GetSteamIdFromUserName(apiKey, userName, httpClient);
+            long steamId = await GetSteamIdFromUserName(apiKey, userName, httpClient);
             
             
             List<GameInfo> gameList = await ParseGetOwnedGamesAsync(apiKey, steamId, httpClient);
