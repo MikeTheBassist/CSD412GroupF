@@ -66,9 +66,9 @@ namespace GroupF.Controllers
             ViewData["steamUserName"] = steamUserName;
 
             // Using my Steam ID as a placeholder, this will be replaced by the "getUserNameFromId" method once it's written...
-            //long steamId = ;
-            //if (userName != null)
-            long steamId = await GetSteamIdFromUserName(apiKey, userName, httpClient);
+            long steamId = 76561198084962721;
+            if (userName != null)
+            steamId = await GetSteamIdFromUserName(apiKey, userName, httpClient);
             
             
             List<GameInfo> gameList = await ParseGetOwnedGamesAsync(apiKey, steamId, httpClient);
@@ -87,7 +87,7 @@ namespace GroupF.Controllers
                 foreach (var game in gameList)
                 {
                     Game dbGame = _context.Game.Find(game.appid);
-                    if (dbGame != null && dbGame.rating >= 0)//get every game in the database that the player owns and we have information for
+                    if (dbGame != null)//get every game in the database that the player owns and we have information for
                     {
                         gameInfoPlusList.Add(new GameInfoPlus(game, dbGame)); //creating GameInfoPlus objects out of Game objects from the database and GameInfo Objects from the api query
                     }
@@ -300,15 +300,15 @@ namespace GroupF.Controllers
                 string response = await apiResponse.Content.ReadAsStringAsync();
                 response = response.Substring(response.IndexOf(":") + 1);
                 response = response.Substring(0, response.Length - 1);
-                dynamic parsedResponse = JsonConvert.DeserializeObject<dynamic>(response);
+                var parsedResponse = JsonConvert.DeserializeObject<dynamic>(response);
 
-                if (parsedResponse.success == true)
+                if (parsedResponse.success == true && parsedResponse.GetType().GetProperty("data") != null)
                 {
-                    if (parsedResponse.data.GetProperty("metacritic") != null)
+                    if (parsedResponse.data.GetType().GetProperty("metacritic") != null)
                     {
                         rating = parsedResponse.data.metacritic.score;
                     }
-                    if (parsedResponse.data.GetProperty("genres") != null)
+                    if (parsedResponse.data.GetType().GetProperty("genres") != null)
                     {
                         genre = "";
                         foreach (var g in parsedResponse.data.genres)
