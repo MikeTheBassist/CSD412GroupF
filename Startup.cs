@@ -12,6 +12,8 @@ using GroupF.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using GroupF.Areas.Identity;
+
 
 namespace GroupF
 {
@@ -30,7 +32,8 @@ namespace GroupF
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddCors();
+            services.AddDefaultIdentity<GameUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -54,6 +57,8 @@ namespace GroupF
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
 
