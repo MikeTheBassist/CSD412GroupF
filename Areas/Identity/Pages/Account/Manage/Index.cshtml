@@ -12,20 +12,13 @@
         <form id="profile-form" method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Username"></label>
-                <input asp-for="Username" class="form-control" disabled />
+                <label asp-for="Input.Email"></label>
+                <input asp-for="Input.Email" class="form-control"/>
             </div>
+          
             <div class="form-group">
-                <label asp-for="Input.FirstName"></label>
-                <input asp-for="Input.FirstName" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.LastName"></label>
-                <input asp-for="Input.LastName" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.SteamId"></label>
-                <input asp-for="Input.SteamId" class="form-control" />
+                <label asp-for="Input.SteamUsername"></label>
+                <input asp-for="Input.SteamUsername" class="form-control" />
             </div>
             <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
         </form>

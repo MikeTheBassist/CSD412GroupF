@@ -14,5 +14,6 @@ namespace GroupF.Data
         {
         }
         public DbSet<GroupF.Models.Game> Game { get; set; }
+        public DbSet<GroupF.Areas.Identity.GameUser> GameUser { get; set; }
     }
 }

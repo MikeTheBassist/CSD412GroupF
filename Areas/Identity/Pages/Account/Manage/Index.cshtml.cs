@@ -32,26 +32,23 @@ namespace GroupF.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-
-            public string FirstName { get; set; }
-            public string LastName { get; set; }
-            public long SteamId { get; set; }
+            public string Email { get; set; }
+            public string SteamUsername { get; set; }
 
         }
 
         private async Task LoadAsync(GameUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+           
             GameUser gameUser = await _userManager.GetUserAsync(User);
 
             Username = userName;
 
             Input = new InputModel
             {
-                FirstName = gameUser.FirstName,
-                LastName = gameUser.LastName,
-                SteamId = gameUser.SteamId
+                Email = gameUser.Email,
+                SteamUsername = gameUser.SteamUsername
             };
         }
 
@@ -81,8 +78,8 @@ namespace GroupF.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            user.FirstName = Input.FirstName;
-            user.LastName = Input.LastName;
+            user.SteamUsername = Input.SteamUsername;
+            user.Email = Input.Email;
 
 
             await _signInManager.RefreshSignInAsync(user);
