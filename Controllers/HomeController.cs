@@ -16,6 +16,9 @@ using System.Text;
 using GroupF.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using GroupF.Areas.Identity;
 
 namespace GroupF.Controllers
 {
@@ -23,9 +26,13 @@ namespace GroupF.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
-
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        private readonly SignInManager<GameUser> _signInManager;
+        private readonly UserManager<GameUser> _userManager;
+        private const int MAX_NEW_RATINGS = 50;
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, SignInManager<GameUser> signInManager, UserManager<GameUser> userManager)
         {
+            _userManager = userManager;
+            _signInManager = signInManager;
             _context = context;
             _logger = logger;
         }
@@ -33,10 +40,6 @@ namespace GroupF.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            // TODO:  Add a 'login with Steam' interface or just have a text box you put your Steam Username into that gets passed to the Recommendations action
-
-
-
             return View();
         }
 
@@ -63,14 +66,22 @@ namespace GroupF.Controllers
             var httpClient = new HttpClient();
 
             String userName = steamUserName;
-            ViewData["steamUserName"] = steamUserName;
+            /*
+            if (_signInManager.IsSignedIn(User))
+            {
+                GameUser user = await _userManager.GetUserAsync(User);
+                userName = user.SteamUsername;
+            }
+            */
+            ViewData["steamUserName"] = userName;
 
             // Using my Steam ID as a placeholder, this will be replaced by the "getUserNameFromId" method once it's written...
             //long steamId = ;
             //if (userName != null)
             long steamId = await GetSteamIdFromUserName(apiKey, userName, httpClient);
+
             
-            
+
             List<GameInfo> gameList = await ParseGetOwnedGamesAsync(apiKey, steamId, httpClient);
             
             List<GameInfoPlus> gameInfoPlusList = new List<GameInfoPlus>();
@@ -82,18 +93,17 @@ namespace GroupF.Controllers
             }
             else
             {                
-                await AddGameInfoToDatabase(gameList);
+                await AddGameInfoToDatabase(gameList, httpClient);
 
                 foreach (var game in gameList)
                 {
-                    Game dbGame = _context.Game.Find(game.appid);
-                    if (dbGame != null)//get every game in the database that the player owns and we have information for
+                    Rating rating = _context.Rating.Find(game.appid);
+                    if (rating != null)//get every game in the database that the player owns and we have information for
                     {
-                        gameInfoPlusList.Add(new GameInfoPlus(game, dbGame)); //creating GameInfoPlus objects out of Game objects from the database and GameInfo Objects from the api query
+                        gameInfoPlusList.Add(new GameInfoPlus(game, rating));
                     }
+                    
                 }
-
-                gameInfoPlusList = gameInfoPlusList.OrderBy(o => o.playtime_forever).ToList();
                 // gameList = await getAppInfoFromListAsync(gameList, httpClient);
 
             }
@@ -227,57 +237,32 @@ namespace GroupF.Controllers
             return null;
         }
 
-        private async Task<bool> AddGameInfoToDatabase(List<GameInfo> gameList)
+        private async Task<bool> AddGameInfoToDatabase(List<GameInfo> gameList , HttpClient client)
         {
-            List<Game> dbGameList = _context.Game.ToList();
-          
-            //_context.Game.RemoveRange(dbGameList); //next 3 lines clear the db for testing
-            //_context.SaveChanges();          
-            //dbGameList = _context.Game.ToList();
-            
-            var gamesToAdd = new List<Game>();
-            var client = new HttpClient();
-            var gamesToRemove = new List<Game>();
-            gameList = gameList.OrderBy(o => o.playtime_forever).ToList();//ordering so least played games are added first 
+            List<Rating> ratingList = _context.Rating.ToList();
+            //_context.Rating.RemoveRange(ratingList); //next 3 lines clear the db for testing
+            //_context.SaveChanges();
+            //ratingList = _context.Rating.ToList();
 
+            var ratingsToAdd = new List<Rating>();
+            gameList = gameList.OrderBy(o => o.playtime_forever).ToList();
             foreach (var game in gameList)
             {
-                if (dbGameList != null)
+                Rating rating = ratingList.Find(x => x.appid == game.appid);
+                if (rating == null)
                 {
-                    Game dbGame = dbGameList.Find(x => x.appid == game.appid);
-                    if (dbGame != null)
-                    {
-                        if (dbGame.genre == "unknown" || dbGame.rating == -1 && dbGame.updated.CompareTo(DateTime.UtcNow.AddDays(-1)) <= 0)//checking if the genre or rating info is missing
-                        {
-                            gamesToRemove.Add(dbGame);//adding the game to a list for later removal
-                            gamesToAdd.Add(await GetGameRatingAndGenreWithId(game, client)); //getting replacement game information for game to be removed
-                        }
-                    }
-                    else
-                    {
-                        gamesToAdd.Add(await GetGameRatingAndGenreWithId(game, client)); //if the game is not in the db add it
-                    }
+                    ratingsToAdd.Add(await GetGameRating(game, client)); //if the game is not in the db add it
                 }
-                else
-                {
-                    gamesToAdd.Add(await GetGameRatingAndGenreWithId(game, client));//if there are no games in the database add them all
-                }
-                if(gamesToAdd.Count >= 100)
+                if(ratingsToAdd.Count >= MAX_NEW_RATINGS)
                 {
                     break;
                 }
             }
-            if (gamesToRemove.Count > 0)//checking if the are games to remove from the database
-            {
-                _context.Game.RemoveRange(gamesToRemove);
-                _context.SaveChanges();
-            }
-
-            _context.Game.AddRange(gamesToAdd);
+            _context.Rating.AddRange(ratingsToAdd);
             _context.Database.OpenConnection();
-            _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Game ON");
+            _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Rating ON");
             _context.SaveChanges();
-            _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Game OFF");
+            _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Rating OFF");
             return true; 
         }
 
@@ -287,46 +272,37 @@ namespace GroupF.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        private async Task<Game> GetGameRatingAndGenreWithId(GameInfo game, HttpClient client)
+        private async Task<Rating> GetGameRating(GameInfo game, HttpClient client)
         {
 
-            string queryString = "https://store.steampowered.com/api/appdetails/?appids=" + game.appid + "&cc=gb&filters=metacritic,genres";
+            string queryString = "https://store.steampowered.com/appreviews/"+game.appid+"?json=1&num_per_page=0";
             var apiResponse = await client.GetAsync(queryString);
-            string genre = null;
-            int rating = -1;
+            float likePercentage = 0;
+            int rating = 0;
 
             if (apiResponse != null && apiResponse.IsSuccessStatusCode)
             {
                 string response = await apiResponse.Content.ReadAsStringAsync();
-                response = response.Substring(response.IndexOf(":") + 1);
-                response = response.Substring(0, response.Length - 1);
                 var parsedResponse = JsonConvert.DeserializeObject<dynamic>(response);
-
-                if (parsedResponse.success == true && parsedResponse.GetType().GetProperty("data") != null)
+                try
                 {
-                    if (parsedResponse.data.GetType().GetProperty("metacritic") != null)
-                    {
-                        rating = parsedResponse.data.metacritic.score;
-                    }
-                    if (parsedResponse.data.GetType().GetProperty("genres") != null)
-                    {
-                        genre = "";
-                        foreach (var g in parsedResponse.data.genres)
-                        {
-                            genre += g.description + ",";
-                        }
-                        genre = genre.Substring(0, genre.Length - 1);
-                    }
+                    rating = parsedResponse.query_summary.review_score;
                 }
+                catch (Exception e)
+                {
 
+                }
+                try
+                {
+                    if((float)(parsedResponse.query_summary.total_reviews) != 0)
+                    likePercentage = (int)Math.Floor((float)(parsedResponse.query_summary.total_positive)/(float)(parsedResponse.query_summary.total_reviews)*100);
+                }
+                catch (Exception e)
+                {
+
+                }
             }
-
-            if (genre == null)
-            {
-                genre = "unknown";
-            }
-
-            return new Game(game, rating, genre);
+            return new Rating(game.appid, rating, likePercentage);
         }
 
 

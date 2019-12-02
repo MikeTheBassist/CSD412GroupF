@@ -29,11 +29,11 @@ namespace GroupF.Controllers
         // GET: api/<controller>
         //[Authorize]
         [HttpGet]
-        public async Task<IEnumerable<Game>> Get()
+        public async Task<IEnumerable<Rating>> Get()
         {
             IdentityUser user = await _userManager.GetUserAsync(User);
 
-            return _context.Game.ToList();
+            return _context.Rating.ToList();
         }
 
         // GET api/<controller>/5

@@ -19,7 +19,7 @@ namespace GroupF.Models
         public int playtime_mac_forever { get; set; }
         public int playtime_linux_forever { get; set; }
         public int rating { get; set; }
-        public string genre { get; set; }
+        public float likePercentage { get; set; }
 
 
         public GameInfoPlus()
@@ -27,7 +27,7 @@ namespace GroupF.Models
 
         }
 
-        public GameInfoPlus(GameInfo gameInfo, Game game)
+        public GameInfoPlus(GameInfo gameInfo, Rating rating)
         {
             appid = gameInfo.appid;
             name = gameInfo.name;
@@ -38,8 +38,8 @@ namespace GroupF.Models
             playtime_windows_forever = gameInfo.playtime_windows_forever;
             playtime_mac_forever = gameInfo.playtime_mac_forever;
             playtime_linux_forever = gameInfo.playtime_linux_forever;
-            rating = game.rating;
-            genre = game.genre;
+            this.rating = rating.rating;
+            likePercentage = rating.likePercentage;
         }
     }
 }

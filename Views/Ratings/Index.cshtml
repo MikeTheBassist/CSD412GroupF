@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GroupF.Models.Game>
+﻿@model IEnumerable<GroupF.Models.Rating>
 
 @{
     ViewData["Title"] = "Index";
@@ -6,9 +6,6 @@
 
 <h1 class="text-white">Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table text-white">
     <thead>
         <tr>
@@ -22,10 +19,7 @@
                 @Html.DisplayNameFor(model => model.rating)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.genre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.updated)
+                @Html.DisplayNameFor(model => model.likePercentage)
             </th>
             <th></th>
         </tr>
@@ -47,16 +41,9 @@
                 @Html.DisplayFor(modelItem => item.rating)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.genre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.updated)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.appid">Edit</a>
-                <a asp-action="Delete" asp-route-id="@item.appid">Delete</a>
+                @Html.DisplayFor(modelItem => item.likePercentage)
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

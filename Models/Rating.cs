@@ -5,23 +5,18 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 namespace GroupF.Models
 {
-    public class Game
+    public class Rating
     {
         [Key]
         public int appid { get; set; }
         public int rating { get; set; }
-        public string genre { get; set; }
-        public DateTime updated { get; set; }
-        public Game()
+        public float likePercentage { get; set; }
+        
+        public Rating(int appid, int rating, float likePercentage)
         {
-
-        }
-        public Game(GameInfo game, int rating, string genre)
-        {
-            this.appid = game.appid;
+            this.appid = appid;
             this.rating = rating;
-            this.genre = genre;
-            this.updated = DateTime.UtcNow;
+            this.likePercentage = likePercentage;
         }
     }
 }
