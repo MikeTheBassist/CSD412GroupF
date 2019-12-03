@@ -27,11 +27,11 @@ namespace GroupF.Controllers
         }
 
         // GET: api/<controller>
-        //[Authorize]
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<Rating>> Get()
         {
-            IdentityUser user = await _userManager.GetUserAsync(User);
+            GameUser user = await _userManager.GetUserAsync(User);
 
             return _context.Rating.ToList();
         }
@@ -43,22 +43,22 @@ namespace GroupF.Controllers
             return "value";
         }
 
-        // POST api/<controller>
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
+        //// POST api/<controller>
+        //[HttpPost]
+        //public void Post([FromBody]string value)
+        //{
+        //}
 
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+        //// PUT api/<controller>/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody]string value)
+        //{
+        //}
 
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //// DELETE api/<controller>/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }

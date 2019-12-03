@@ -4,10 +4,10 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1 class="text-white" >@ViewData["Title"]</h1>
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-4 text-white">
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h4>Create a new account.</h4>
             <hr />
@@ -39,7 +39,7 @@
         </form>
     </div>
     <div class="col-md-6 col-md-offset-2">
-        <section>
+        <section class="text-white" >
             <h4>Use another service to register.</h4>
             <hr />
             @{

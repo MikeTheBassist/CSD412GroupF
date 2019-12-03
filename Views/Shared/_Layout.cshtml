@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/custom.css" />
 </head>
-<body class="bg-radial-gradient">
+<body class="bg-radial-gradient text-white">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-blackblue border-bottom box-shadow mb-3">
             <div class="container">
@@ -23,9 +23,11 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Ratings" asp-action="Index">(View Database)</a>@*just for debugging remove before launch*@
-                        </li>
+                        @*
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Ratings" asp-action="Index">(View Database)</a>
+                                            </li>
+                        *@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
@@ -33,14 +35,7 @@
                     </ul>
 
                 </div>
-                @using (Html.BeginForm())
-                {
-                    <div class="text-white-50">Steam Username: </div>
-                    <input type="text" name="steamUserName" />
-                    <div class="text-white-50">Steam API Key: </div>
-                    <input type="text" name="steamAPIKey" />
-                    <input type="submit" asp-controller="Home" asp-action="Recommendations" />
-                }
+
             </div>
         </nav>
     </header>
@@ -49,6 +44,15 @@
 
 
             @RenderBody()
+
+            @using (Html.BeginForm())
+            {
+                <div class="text-white-50">Steam Username: </div>
+                <input type="text" name="steamUserName" />
+                <div class="text-white-50">Steam API Key: </div>
+                <input type="text" name="steamAPIKey" />
+                <input type="submit" asp-controller="Home" asp-action="Recommendations" />
+            }
         </main>
     </div>
 
