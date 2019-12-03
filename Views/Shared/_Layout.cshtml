@@ -23,11 +23,13 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        @*
+                        
                             <li class="nav-item">
                                 <a class="nav-link text-white" asp-area="" asp-controller="Ratings" asp-action="Index">(View Database)</a>
                                             </li>
-                        *@
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="PopulateDatabase">(Add to Database)</a>
+                            </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
@@ -45,14 +47,7 @@
 
             @RenderBody()
 
-            @using (Html.BeginForm())
-            {
-                <div class="text-white-50">Steam Username: </div>
-                <input type="text" name="steamUserName" />
-                <div class="text-white-50">Steam API Key: </div>
-                <input type="text" name="steamAPIKey" />
-                <input type="submit" asp-controller="Home" asp-action="Recommendations" />
-            }
+
         </main>
     </div>
 

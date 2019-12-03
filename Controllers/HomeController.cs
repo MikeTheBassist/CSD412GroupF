@@ -43,44 +43,24 @@ namespace GroupF.Controllers
             return View();
         }
 
+        public async Task<IActionResult> PopulateDatabase(){
+            return View();
+        }
+
         public async Task<IActionResult> Recommendations(String steamUserName, String steamAPIKey)
         {
-            // Create a test GameInfo object using Half Life data for testing view creation
-            //GameInfo gameTest = new GameInfo();
 
-            // Json representing Half Life data
-            //String testString = "{\"appid\": 70,\"name\": \"Half-Life\",\"playtime_forever\": 100,\"img_icon_url\":" +
-            //     " \"95be6d131fc61f145797317ca437c9765f24b41c\",\"img_logo_url\": \"6bd76ff700a8c7a5460fbae3cf60cb930279897d\",\"has_community_visible_stats\": " +
-            //   "true,\"playtime_windows_forever\": 0,\"playtime_mac_forever\": 0,\"playtime_linux_forever\": 0}";
-
-            //gameTest = JsonConvert.DeserializeObject<GameInfo>(testString);
-
-            // until I figure out how to securely keep an api key in the repo, this variable is a placeholder of sorts.  
             // get a Steam API Key using your login and 127.0.0.1 as your Domain Name: steamcommunity.com/dev/apikey
             String apiKey = steamAPIKey;
-            //String apiKey = "";
-
-
 
             // create new HttpClient for sending and receiving information via Http protocol
             var httpClient = new HttpClient();
 
             String userName = steamUserName;
-            /*
-            if (_signInManager.IsSignedIn(User))
-            {
-                GameUser user = await _userManager.GetUserAsync(User);
-                userName = user.SteamUsername;
-            }
-            */
+
             ViewData["steamUserName"] = userName;
 
-            // Using my Steam ID as a placeholder, this will be replaced by the "getUserNameFromId" method once it's written...
-            //long steamId = ;
-            //if (userName != null)
             long steamId = await GetSteamIdFromUserName(apiKey, userName, httpClient);
-
-            
 
             List<GameInfo> gameList = await ParseGetOwnedGamesAsync(apiKey, steamId, httpClient);
             
@@ -104,7 +84,6 @@ namespace GroupF.Controllers
                     }
                     
                 }
-                // gameList = await getAppInfoFromListAsync(gameList, httpClient);
 
             }
 
@@ -220,8 +199,8 @@ namespace GroupF.Controllers
             {
                 // read response as a String and parse to Json
                 String apiResponse = await response.Content.ReadAsStringAsync();
-                //https://store.steampowered.com/api/appdetails/?appids=311210&cc=gb&filters=metacritic
-                //https://store.steampowered.com/api/appdetails/?appids=311210&cc=gb&filters=genres
+                //https://store.steampowered.com/api/appdetails/?appids=311210&cc=gb&filters=metacritic,genres
+
                 if (response.IsSuccessStatusCode)
                 {
                     dynamic parsedResponse = JsonConvert.DeserializeObject<dynamic>(apiResponse);
@@ -240,9 +219,6 @@ namespace GroupF.Controllers
         private async Task<bool> AddGameInfoToDatabase(List<GameInfo> gameList , HttpClient client)
         {
             List<Rating> ratingList = _context.Rating.ToList();
-            //_context.Rating.RemoveRange(ratingList); //next 3 lines clear the db for testing
-            //_context.SaveChanges();
-            //ratingList = _context.Rating.ToList();
 
             var ratingsToAdd = new List<Rating>();
             gameList = gameList.OrderBy(o => o.playtime_forever).ToList();
