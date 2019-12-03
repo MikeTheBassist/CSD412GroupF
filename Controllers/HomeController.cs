@@ -89,7 +89,6 @@ namespace GroupF.Controllers
 
             ViewData["gameList"] = gameInfoPlusList;
 
-
             return View(gameInfoPlusList);
 
         }

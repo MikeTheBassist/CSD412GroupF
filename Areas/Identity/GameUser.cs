@@ -9,6 +9,5 @@ namespace GroupF.Areas.Identity
     public class GameUser : IdentityUser
     {
         public string SteamUsername { get; set; }
-
     }
 }
