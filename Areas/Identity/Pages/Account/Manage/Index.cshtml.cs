@@ -80,6 +80,7 @@ namespace GroupF.Areas.Identity.Pages.Account.Manage
 
             user.SteamUsername = Input.SteamUsername;
             user.Email = Input.Email;
+            await _userManager.UpdateAsync(user);
 
 
             await _signInManager.RefreshSignInAsync(user);
