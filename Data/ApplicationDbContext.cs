@@ -15,5 +15,6 @@ namespace GroupF.Data
         }
         public DbSet<GroupF.Models.Rating> Rating { get; set; }
         public DbSet<GroupF.Areas.Identity.GameUser> GameUser { get; set; }
+        public DbSet<GroupF.Models.GameInfoPlus> GameInfoPlus { get; set; }
     }
 }
