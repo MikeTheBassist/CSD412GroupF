@@ -23,7 +23,7 @@ namespace GroupF.Controllers
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<GameUser> _signInManager;
         private readonly UserManager<GameUser> _userManager;
-        public const int MAX_NEW_RATINGS = 50;
+        private const int MAX_NEW_RATINGS = 50;
 
         public RecommendationController(ApplicationDbContext context, SignInManager<GameUser> signInManager, UserManager<GameUser> userManager)
         {
@@ -48,7 +48,7 @@ namespace GroupF.Controllers
 
             ViewData["steamUserName"] = steamUserName;
 
-            var recommendations = await getRecommendations(steamUserName);
+            var recommendations = await GetRecommendations(steamUserName);
 
             ViewData["gameList"] = recommendations;
 
@@ -56,13 +56,13 @@ namespace GroupF.Controllers
 
         }
 
-        public async Task<List<GameInfoPlus>> getRecommendations(string steamUserName, bool addToDataBase = true)
+        public async Task<List<GameInfoPlus>> GetRecommendations(string steamUserName, bool addToDataBase = true)
         {
             String apiKey = Environment.GetEnvironmentVariable("Steam_API_Key");
 
             // create new HttpClient for sending and receiving information via Http protocol
             var httpClient = new HttpClient();
-
+            
             String userName = steamUserName;
 
             

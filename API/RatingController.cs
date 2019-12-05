@@ -22,8 +22,8 @@ namespace GroupF.API
         }
 
         // GET: api/Rating
-        [HttpGet]
-        public async Task<ActionResult> Get()
+        [HttpGet(Name = nameof(GetRating))]
+        public async Task<ActionResult> GetRating()
         {
             var response = new
             {
@@ -42,7 +42,7 @@ namespace GroupF.API
 
             if (rating == null)
             {
-                return Ok(new { success = false});
+                return Ok(new { success = false, error = "No rating for appid "+id+" found"});
             }
             var response = new
             {
