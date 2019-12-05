@@ -18,9 +18,15 @@ namespace GroupF.Controllers
         {
             _context = context;
         }
+
         public async Task<IActionResult> Index()
         {
             return View(await _context.Rating.ToListAsync());
+        }
+
+        public async Task<IActionResult> PopulateDatabase()
+        {
+            return View();
         }
     }
 }

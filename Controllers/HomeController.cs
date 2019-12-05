@@ -28,7 +28,8 @@ namespace GroupF.Controllers
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<GameUser> _signInManager;
         private readonly UserManager<GameUser> _userManager;
-        private const int MAX_NEW_RATINGS = 50;
+        public const int MAX_NEW_RATINGS = 50;
+
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, SignInManager<GameUser> signInManager, UserManager<GameUser> userManager)
         {
             _userManager = userManager;
@@ -43,9 +44,7 @@ namespace GroupF.Controllers
             return View();
         }
 
-        public async Task<IActionResult> PopulateDatabase(){
-            return View();
-        }
+        
 
         public async Task<IActionResult> Recommendations(String steamUserName, String steamAPIKey)
         {
