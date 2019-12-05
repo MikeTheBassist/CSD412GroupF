@@ -45,6 +45,19 @@ namespace GroupF.Controllers
             if (steamUserName == null)
                 steamUserName = (await _userManager.GetUserAsync(User)).SteamUsername;
             // get a Steam API Key using your login and 127.0.0.1 as your Domain Name: steamcommunity.com/dev/apikey
+
+            ViewData["steamUserName"] = steamUserName;
+
+            var recommendations = await getRecommendations(steamUserName);
+
+            ViewData["gameList"] = recommendations;
+
+            return View(recommendations);
+
+        }
+
+        public async Task<List<GameInfoPlus>> getRecommendations(string steamUserName, bool addToDataBase = true)
+        {
             String apiKey = Environment.GetEnvironmentVariable("Steam_API_Key");
 
             // create new HttpClient for sending and receiving information via Http protocol
@@ -52,7 +65,7 @@ namespace GroupF.Controllers
 
             String userName = steamUserName;
 
-            ViewData["steamUserName"] = userName;
+            
 
             long steamId;
 
@@ -69,10 +82,11 @@ namespace GroupF.Controllers
 
             if (steamId == 0 || gameList.Count == 0 || gameList == null)
             {
-                return View();
+                return null;
             }
             else
             {
+                if(addToDataBase)
                 await AddGameInfoToDatabase(gameList);
 
                 foreach (var game in gameList)
@@ -104,11 +118,7 @@ namespace GroupF.Controllers
 
                 }
             }
-
-            ViewData["gameList"] = recommendations;
-
-            return View(recommendations);
-
+            return recommendations;
         }
 
         public async Task<List<GameInfo>> ParseGetOwnedGamesAsync(String apiKey, long steamId, HttpClient client)
