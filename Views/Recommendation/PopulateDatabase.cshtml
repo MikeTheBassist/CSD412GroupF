@@ -1,0 +1,38 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using GroupF.Areas.Identity
+
+@{
+    ViewData["Title"] = "Add Games to Database";
+
+    
+}
+    
+    <div class="text-center text-white">
+
+        <h1 class="display-4">Add an account's games to the database:</h1>
+        @using (Html.BeginForm())
+        {
+            <div class="text-white-50">Steam Username: </div>
+            <input type="text" name="steamUserName" />
+            <div class="text-white-50">Max New Ratings: </div>
+            <input type="text" name="maxNewRatings" value="50" />
+            <input type="submit" asp-controller="Recommendation" asp-action="PopulateDatabase" />
+        }
+        @{
+            <p>There are currently @ViewData["CurrentRatingsCount"] Ratings in the Database</p>
+            if (ViewData["GamesAdded"] != null)
+            {
+                int gamesAdded;
+                gamesAdded = (int)ViewData["GamesAdded"];
+                if (gamesAdded > 0)
+                {
+                    <p>You added @gamesAdded games to the database</p>
+                }
+                else
+                {
+                    <p>No Games Where Added</p>
+                }
+
+            }
+        }
+    </div>

@@ -40,10 +40,9 @@ namespace GroupF.Controllers
 
         // GET: Recommendation/Details/5
         [Authorize]
-        public async Task<IActionResult> Recommendations(String steamUserName = null)
+        public async Task<IActionResult> Recommendations()
         {
-            if (steamUserName == null)
-                steamUserName = (await _userManager.GetUserAsync(User)).SteamUsername;
+             string steamUserName = (await _userManager.GetUserAsync(User)).SteamUsername;
             // get a Steam API Key using your login and 127.0.0.1 as your Domain Name: steamcommunity.com/dev/apikey
 
             ViewData["steamUserName"] = steamUserName;
@@ -56,7 +55,34 @@ namespace GroupF.Controllers
 
         }
 
-        public async Task<List<GameInfoPlus>> GetRecommendations(string steamUserName, bool addToDataBase = true)
+        public async Task<IActionResult> PopulateDatabase(String steamUserName = null,int maxNewRatings = MAX_NEW_RATINGS)
+        {
+            ViewData["CurrentRatingsCount"] = (await _context.Rating.ToListAsync()).Count; 
+            if (steamUserName == null)
+                return View();
+
+            String apiKey = Environment.GetEnvironmentVariable("Steam_API_Key");
+            var httpClient = new HttpClient();
+
+            ViewData["steamUserName"] = steamUserName;
+            long steamId = 0;
+            if (!long.TryParse(string.Format("{0}", steamUserName), out steamId))
+            {
+                steamId = await GetSteamIdFromUserName(apiKey, steamUserName, httpClient);
+            }
+            
+            List<GameInfo> gameList = await ParseGetOwnedGamesAsync(apiKey, steamId, httpClient);
+            if(gameList == null)
+            {
+                return View();
+            }
+            ViewData["GamesAdded"] = await AddGameInfoToDatabase(gameList,maxNewRatings);
+            ViewData["CurrentRatingsCount"] = (await _context.Rating.ToListAsync()).Count;
+            return View();
+
+        }
+
+        public async Task<List<GameInfoPlus>> GetRecommendations(string steamUserName,bool addToDatabase = true)
         {
             String apiKey = Environment.GetEnvironmentVariable("Steam_API_Key");
 
@@ -64,8 +90,6 @@ namespace GroupF.Controllers
             var httpClient = new HttpClient();
             
             String userName = steamUserName;
-
-            
 
             long steamId;
 
@@ -86,7 +110,7 @@ namespace GroupF.Controllers
             }
             else
             {
-                if(addToDataBase)
+                if(addToDatabase)
                 await AddGameInfoToDatabase(gameList);
 
                 foreach (var game in gameList)
@@ -238,7 +262,7 @@ namespace GroupF.Controllers
             return null;
         }
 
-        private async Task<bool> AddGameInfoToDatabase(List<GameInfo> gameList, int MaxRatingsToAdd = MAX_NEW_RATINGS)
+        private async Task<int> AddGameInfoToDatabase(List<GameInfo> gameList, int MaxRatingsToAdd = MAX_NEW_RATINGS)
         {
             HttpClient client = new HttpClient();
 
@@ -263,7 +287,7 @@ namespace GroupF.Controllers
             _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Rating ON");
             _context.SaveChanges();
             _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Rating OFF");
-            return true;
+            return ratingsToAdd.Count;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
