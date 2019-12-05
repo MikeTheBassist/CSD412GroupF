@@ -25,21 +25,19 @@
         @{
             if (SignInManager.IsSignedIn(User))
             {
-                <p>Your Ready</p>
-                <button class="btn-lg btn-primary" type="button" onclick="location.href='@Url.Action("Recommendations", "Recommendation")'">Get Your Recomendations!</button>
+                <p>You're Ready!</p>
+                <button class="btn-lg btn-primary" type="button" onclick="location.href='@Url.Action("Recommendations", "Recommendation")'">Get Your Recommendations!</button>
             }
             else
             {
                  <div class="row">
                      <div class="col-md-6 mx-auto">
                          <div class="card text-white border-dark bg-blackblue">
-                             <p class="card-header"> Oh No! Your not Logged in!</p>
-                             <p class="card-body ">In order to get your life changing recomendations you need to <a asp-area="Identity" asp-page="/Account/Register">Register</a> or <a asp-area="Identity" asp-page="/Account/Login">Login</a></p>
+                             <p class="card-header"> Oh No! You're not Logged in!</p>
+                             <p class="card-body ">In order to get your life changing recommendations you need to <a asp-area="Identity" asp-page="/Account/Register">Register</a> or <a asp-area="Identity" asp-page="/Account/Login">Login</a></p>
                          </div>
                      </div>
                  </div>
             }
-
-            
         }
     </div>
