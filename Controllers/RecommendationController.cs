@@ -78,6 +78,7 @@ namespace GroupF.Controllers
             List<GameInfo> gameList = await ParseGetOwnedGamesAsync(apiKey, steamId, httpClient);
             if(gameList == null)
             {
+                ViewData["GamesAdded"] = 0;
                 return View();
             }
             ViewData["GamesAdded"] = await AddGameInfoToDatabase(gameList,maxNewRatings);
