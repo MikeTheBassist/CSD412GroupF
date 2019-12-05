@@ -44,11 +44,6 @@ namespace GroupF.Controllers
             return View();
         }
 
-       
-
-
-
-
     }
 
 }

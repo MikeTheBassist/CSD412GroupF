@@ -18,6 +18,10 @@ using GroupF.Areas.Identity;
 namespace GroupF.Controllers
 {
 
+    /*
+     *  The RecommendationController handles requests required to form a list of recommended games for a particular user,
+     *  determined based on game playtime and overall user rating.
+     */
     public class RecommendationController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -101,6 +105,7 @@ namespace GroupF.Controllers
 
             List<GameInfo> gameList = await ParseGetOwnedGamesAsync(apiKey, steamId, httpClient);
 
+            // create list of all games to be populated, as well as a list for storing recommendations
             List<GameInfoPlus> gameInfoPlusList = new List<GameInfoPlus>();
             List<GameInfoPlus> recommendations = new List<GameInfoPlus>();
 
@@ -115,7 +120,9 @@ namespace GroupF.Controllers
 
                 foreach (var game in gameList)
                 {
+                    // check database for rating on current game
                     Rating rating = _context.Rating.Find(game.appid);
+
                     if (rating != null)//get every game in the database that the player owns and we have information for
                     {
                         if (rating.likePercentage > 0 && game.playtime_forever < (4 * 60))
@@ -128,6 +135,7 @@ namespace GroupF.Controllers
                 // Sort remaining list by rating
                 gameInfoPlusList.Sort(new CompareByRatingDescending());
 
+                // listCount will determine the maximum number of items in the recommendations list
                 int listCount = 20;
 
                 if (gameInfoPlusList.Count < listCount)
@@ -148,6 +156,7 @@ namespace GroupF.Controllers
         public async Task<List<GameInfo>> ParseGetOwnedGamesAsync(String apiKey, long steamId, HttpClient client)
         {
 
+            // the GetOwnedGames method returns a list of appids and details for each application owned by the user
             String queryString = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" + apiKey + "&include_appinfo=true&steamid=" + steamId + "&format=json";
 
             using (var response = await client.GetAsync(queryString))
@@ -191,6 +200,8 @@ namespace GroupF.Controllers
         public async Task<long> GetSteamIdFromUserName(String apiKey, String userName, HttpClient client)
         {
 
+            // ResolveVanityURL can be used to get the SteamID from a user with a custom URL.  Unfortunately
+            // this is the only way to get a SteamID from a user without using a partner/developer API Key
             String queryString = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=" + apiKey + "&vanityUrl=" + userName;
 
             using (var response = await client.GetAsync(queryString))
@@ -200,6 +211,7 @@ namespace GroupF.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
+                    // parse apiResponse to JSON using dynamic object allocation
                     dynamic parsedResponse = JsonConvert.DeserializeObject<dynamic>(apiResponse);
 
                     if (parsedResponse != null && parsedResponse.response.success == 1)
@@ -222,6 +234,9 @@ namespace GroupF.Controllers
             }
         }
 
+        // TODO: WIP method, using a highly restricted API call that made it difficult to gather substantial information on games in a reliable fashion
+        // after review we opted to use the GetGameRating method below for this purpose.  This could still potentially be worked
+        // into something, so it's still here.
         public async Task<List<GameInfo>> GetAppInfoFromListAsync(List<GameInfo> allGames, HttpClient client)
         {
             String queryString;
@@ -251,11 +266,6 @@ namespace GroupF.Controllers
                 {
                     dynamic parsedResponse = JsonConvert.DeserializeObject<dynamic>(apiResponse);
                     var something = parsedResponse.data;
-                }
-                else
-                {
-
-
                 }
 
             }
@@ -296,6 +306,8 @@ namespace GroupF.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        // this method returns a rating for the game passed based on the amount of positive reviews
+        // left by other people who have played the game
         private async Task<Rating> GetGameRating(GameInfo game, HttpClient client)
         {
 
