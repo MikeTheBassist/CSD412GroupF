@@ -4,29 +4,34 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container">
-    <h1 class="text-xl-center text-white-50">Recommendations</h1>
+    <div class="container">
+        <h1 class="text-xl-center text-white-50">Recommendations</h1>
 
 
-    @model List<GameInfoPlus>
-    @{
-        if (ViewData["gameList"] != null)
-        {
-            var viewGamesList = (List<GameInfoPlus>)ViewData["gameList"];
+        @model List<GameInfoPlus>
+        @{
+            if (ViewData["gameList"] != null)
+            {
+                var viewGamesList = (List<GameInfoPlus>)ViewData["gameList"];
 
-            foreach (var game in viewGamesList)
+                foreach (var game in viewGamesList)
+                {
+
+                    @await Html.PartialAsync("~/Views/GameInfoPlus/_DisplayGameInfoPlus.cshtml", game)
+
+                }
+            }
+            else
             {
 
-                @await Html.PartialAsync("~/Views/GameInfoPlus/_DisplayGameInfoPlus.cshtml", game)
-
+    <h2 class="text-xl-center text-white-50 mb-5"> Unfortunately something went wrong.  Is @ViewData["steamUserName"] a valid <span class="text-steamIdandVanity">Steam Vanity Url</span> or <span class="text-steamIdandVanity">Steam Id</span>?</h2>
+    <div class="row">
+        <div class="col-12">
+            @await Html.PartialAsync("~/Views/Shared/_HowToFindAccountInfo.cshtml")
+        </div>
+    </div>       
+        
             }
         }
-        else
-        {
-            
-            <h2 class="text-xl-center text-white-50"> Unfortunately something went wrong.  Is @ViewData["steamUserName"] a valid Steam account?</h2>
 
-        }
-    }
-
-</div>
+    </div>
