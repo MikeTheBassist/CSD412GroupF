@@ -44,8 +44,6 @@ namespace GroupF.Controllers
             return View();
         }
 
-        
-
         public async Task<IActionResult> Recommendations(String steamUserName, String steamAPIKey)
         {
 
@@ -66,9 +64,9 @@ namespace GroupF.Controllers
             {
                 steamId = await GetSteamIdFromUserName(apiKey, userName, httpClient);
             }
-           
+
             List<GameInfo> gameList = await ParseGetOwnedGamesAsync(apiKey, steamId, httpClient);
-            
+
             List<GameInfoPlus> gameInfoPlusList = new List<GameInfoPlus>();
             List<GameInfoPlus> recommendations = new List<GameInfoPlus>();
 
@@ -77,7 +75,7 @@ namespace GroupF.Controllers
                 return View();
             }
             else
-            {                
+            {
                 await AddGameInfoToDatabase(gameList, httpClient);
 
                 foreach (var game in gameList)
@@ -85,7 +83,7 @@ namespace GroupF.Controllers
                     Rating rating = _context.Rating.Find(game.appid);
                     if (rating != null)//get every game in the database that the player owns and we have information for
                     {
-                        if(rating.likePercentage > 0 && game.playtime_forever < (4 * 60))
+                        if (rating.likePercentage > 0 && game.playtime_forever < (4 * 60))
                         {
                             gameInfoPlusList.Add(new GameInfoPlus(game, rating));
                         }
@@ -95,10 +93,18 @@ namespace GroupF.Controllers
                 // Sort remaining list by rating
                 gameInfoPlusList.Sort(new CompareByRatingDescending());
 
-                
-                for(int i = 0; i < 20; i++)
+                int listCount = 20;
+
+                if (gameInfoPlusList.Count < listCount)
                 {
+                    listCount = gameInfoPlusList.Count;
+                }
+
+                for (int i = 0; i < listCount; i++)
+                {
+
                     recommendations.Add(gameInfoPlusList[i]);
+
                 }
             }
 
@@ -165,7 +171,7 @@ namespace GroupF.Controllers
             {
                 // read response as a String and parse to Json
                 String apiResponse = await response.Content.ReadAsStringAsync();
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     dynamic parsedResponse = JsonConvert.DeserializeObject<dynamic>(apiResponse);
@@ -208,7 +214,7 @@ namespace GroupF.Controllers
                 }
             }
             queryString = "http://store.steampowered.com/api/appdetails?appids=" + str;
-            
+
             using (var response = await client.GetAsync(queryString))
             {
                 // read response as a String and parse to Json
@@ -230,7 +236,7 @@ namespace GroupF.Controllers
             return null;
         }
 
-        private async Task<bool> AddGameInfoToDatabase(List<GameInfo> gameList , HttpClient client)
+        private async Task<bool> AddGameInfoToDatabase(List<GameInfo> gameList, HttpClient client)
         {
             List<Rating> ratingList = _context.Rating.ToList();
 
@@ -243,7 +249,7 @@ namespace GroupF.Controllers
                 {
                     ratingsToAdd.Add(await GetGameRating(game, client)); //if the game is not in the db add it
                 }
-                if(ratingsToAdd.Count >= MAX_NEW_RATINGS)
+                if (ratingsToAdd.Count >= MAX_NEW_RATINGS)
                 {
                     break;
                 }
@@ -253,7 +259,7 @@ namespace GroupF.Controllers
             _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Rating ON");
             _context.SaveChanges();
             _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT Rating OFF");
-            return true; 
+            return true;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -265,7 +271,7 @@ namespace GroupF.Controllers
         private async Task<Rating> GetGameRating(GameInfo game, HttpClient client)
         {
 
-            string queryString = "https://store.steampowered.com/appreviews/"+game.appid+"?json=1&num_per_page=0";
+            string queryString = "https://store.steampowered.com/appreviews/" + game.appid + "?json=1&num_per_page=0";
             var apiResponse = await client.GetAsync(queryString);
             float likePercentage = 0;
             int rating = 0;
@@ -284,8 +290,8 @@ namespace GroupF.Controllers
                 }
                 try
                 {
-                    if((float)(parsedResponse.query_summary.total_reviews) != 0)
-                    likePercentage = (int)Math.Floor((float)(parsedResponse.query_summary.total_positive)/(float)(parsedResponse.query_summary.total_reviews)*100);
+                    if ((float)(parsedResponse.query_summary.total_reviews) != 0)
+                        likePercentage = (int)Math.Floor((float)(parsedResponse.query_summary.total_positive) / (float)(parsedResponse.query_summary.total_reviews) * 100);
                 }
                 catch (Exception e)
                 {
@@ -296,7 +302,7 @@ namespace GroupF.Controllers
         }
 
 
-      
+
 
     }
 
