@@ -10,15 +10,18 @@
     <div class="text-center text-white">
         @if (SignInManager.IsSignedIn(User))
         {
-            
-            var steamUserName = User.Identity;
-            
+            GameUser user = await UserManager.GetUserAsync(User);
+            string steamUserName = user.SteamUsername;
 
-            <div class="text-white-50">Steam Username: </div>
-            <input type="text" name="steamUserName" value=""/>
-            <div class="text-white-50">Steam API Key: </div>
-            <input type="text" name="steamAPIKey" />
-            <input type="submit" asp-controller="Home" asp-action="Recommendations" />
+
+            @using (Html.BeginForm())
+            {
+                <div class="text-white-50">Steam Username: </div>
+                <input type="text" name="steamUserName" value="" />
+                <div class="text-white-50">Steam API Key: </div>
+                <input type="text" name="steamAPIKey" />
+                <input type="submit" asp-controller="Home" asp-action="Recommendations" />
+            }
         }
         else
         {
