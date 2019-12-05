@@ -48,7 +48,7 @@ namespace GroupF.Controllers
         {
 
             // get a Steam API Key using your login and 127.0.0.1 as your Domain Name: steamcommunity.com/dev/apikey
-            String apiKey = steamAPIKey;
+            String apiKey = Environment.GetEnvironmentVariable("Steam_API_Key");
 
             // create new HttpClient for sending and receiving information via Http protocol
             var httpClient = new HttpClient();
