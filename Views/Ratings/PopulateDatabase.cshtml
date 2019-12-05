@@ -11,11 +11,10 @@
             <h1 class="display-4">Add an account's games to the database:</h1>
             @using (Html.BeginForm())
             {
-                
                 <div class="text-white-50">Steam Username: </div>
                 <input type="text" name="steamUserName" />
                 <div class="text-white-50">Steam API Key: </div>
-                <input type="text" name="steamAPIKey"/>
+                
                 <input type="submit" asp-controller="Home" asp-action="Recommendations" />
             }
 

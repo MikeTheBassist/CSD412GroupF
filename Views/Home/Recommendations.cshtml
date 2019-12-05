@@ -5,7 +5,7 @@
 }
 
     <div class="container">
-        <h1 class="text-xl-center text-white-50">Recommendations</h1>
+        <h1 class="text-center text-white">Recommendations</h1>
 
 
         @model List<GameInfoPlus>
@@ -24,13 +24,15 @@
             else
             {
 
-    <h2 class="text-xl-center text-white-50 mb-5"> Unfortunately something went wrong.  Is @ViewData["steamUserName"] a valid <span class="text-steamIdandVanity">Steam Vanity Url</span> or <span class="text-steamIdandVanity">Steam Id</span>?</h2>
-    <div class="row">
-        <div class="col-12">
-            @await Html.PartialAsync("~/Views/Shared/_HowToFindAccountInfo.cshtml")
-        </div>
-    </div>       
-        
+                <h2 class="text-center text-white mb-5">
+                    Unfortunately something went wrong.  Is @ViewData["steamUserName"] a valid <span class="text-steamIdandVanity">Steam Vanity Url</span> or <span class="text-steamIdandVanity">Steam Id</span>?
+                </h2>
+                <div class="row">
+                    <div class="col-12">
+                        @await Html.PartialAsync("~/Views/Shared/_HowToFindAccountInfo.cshtml")
+                    </div>
+                </div>       
+                <h2 class="text-center text-white mb-5"><br /> Once you have found your <span class="text-steamIdandVanity">Steam Vanity Url</span> or <span class="text-steamIdandVanity">Steam Id</span> you can add it to your account <a class="" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Here</a></h2>
             }
         }
 

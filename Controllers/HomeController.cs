@@ -19,6 +19,7 @@ using System.Threading;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using GroupF.Areas.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GroupF.Controllers
 {
@@ -43,10 +44,11 @@ namespace GroupF.Controllers
         {
             return View();
         }
-
-        public async Task<IActionResult> Recommendations(String steamUserName, String steamAPIKey)
+        [Authorize] 
+        public async Task<IActionResult> Recommendations(String steamUserName = null)
         {
-
+            if (steamUserName == null)
+               steamUserName =  (await _userManager.GetUserAsync(User)).SteamUsername;
             // get a Steam API Key using your login and 127.0.0.1 as your Domain Name: steamcommunity.com/dev/apikey
             String apiKey = Environment.GetEnvironmentVariable("Steam_API_Key");
 
@@ -76,7 +78,7 @@ namespace GroupF.Controllers
             }
             else
             {
-                await AddGameInfoToDatabase(gameList, httpClient);
+                await AddGameInfoToDatabase(gameList);
 
                 foreach (var game in gameList)
                 {
@@ -236,8 +238,10 @@ namespace GroupF.Controllers
             return null;
         }
 
-        private async Task<bool> AddGameInfoToDatabase(List<GameInfo> gameList, HttpClient client)
+        private async Task<bool> AddGameInfoToDatabase(List<GameInfo> gameList, int MaxRatingsToAdd = MAX_NEW_RATINGS)
         {
+            HttpClient client = new HttpClient();
+
             List<Rating> ratingList = _context.Rating.ToList();
 
             var ratingsToAdd = new List<Rating>();
@@ -249,7 +253,7 @@ namespace GroupF.Controllers
                 {
                     ratingsToAdd.Add(await GetGameRating(game, client)); //if the game is not in the db add it
                 }
-                if (ratingsToAdd.Count >= MAX_NEW_RATINGS)
+                if (ratingsToAdd.Count >= MaxRatingsToAdd)
                 {
                     break;
                 }
