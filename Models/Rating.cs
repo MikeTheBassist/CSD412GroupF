@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 namespace GroupF.Models
 {
-    public class Rating
+    public class Rating 
     {
         [Key]
         public int appid { get; set; }

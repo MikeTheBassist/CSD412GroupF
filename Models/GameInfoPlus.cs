@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GroupF.Models
 {
-    public class GameInfoPlus
+    public class GameInfoPlus 
     {
         [Key]
         public int appid { get; set; }
@@ -40,6 +41,37 @@ namespace GroupF.Models
             playtime_linux_forever = gameInfo.playtime_linux_forever;
             this.rating = rating.rating;
             likePercentage = rating.likePercentage;
+        }
+
+    }
+
+    class CompareByRatingAscending : IComparer<GameInfoPlus>
+    {
+        public int Compare([AllowNull] GameInfoPlus x, [AllowNull] GameInfoPlus y)
+        {
+            return x.likePercentage.CompareTo(y.likePercentage);
+        }
+    }
+    class CompareByRatingDescending : IComparer<GameInfoPlus>
+    {
+        public int Compare([AllowNull] GameInfoPlus x, [AllowNull] GameInfoPlus y)
+        {
+            return y.likePercentage.CompareTo(x.likePercentage);
+        }
+    }
+
+    class CompareByPlaytimeAscending : IComparer<GameInfoPlus>
+    {
+        public int Compare([AllowNull] GameInfoPlus x, [AllowNull] GameInfoPlus y)
+        {
+            return y.playtime_forever.CompareTo(x.playtime_forever);
+        }
+    }
+    class CompareByPlaytimeDescending : IComparer<GameInfoPlus>
+    {
+        public int Compare([AllowNull] GameInfoPlus x, [AllowNull] GameInfoPlus y)
+        {
+            return x.playtime_forever.CompareTo(y.playtime_forever);
         }
     }
 }

@@ -60,13 +60,19 @@ namespace GroupF.Controllers
 
             ViewData["steamUserName"] = userName;
 
-            long steamId = await GetSteamIdFromUserName(apiKey, userName, httpClient);
+            long steamId;
 
+            // treat the incoming input as a SteamID if it is successfully parsed to a long
+            if (!long.TryParse(string.Format("{0}", userName), out steamId))
+            {
+                steamId = await GetSteamIdFromUserName(apiKey, userName, httpClient);
+            }
+           
             List<GameInfo> gameList = await ParseGetOwnedGamesAsync(apiKey, steamId, httpClient);
             
             List<GameInfoPlus> gameInfoPlusList = new List<GameInfoPlus>();
+            List<GameInfoPlus> recommendations = new List<GameInfoPlus>();
 
-            
             if (steamId == 0 || gameList.Count == 0 || gameList == null)
             {
                 return View();
@@ -80,16 +86,26 @@ namespace GroupF.Controllers
                     Rating rating = _context.Rating.Find(game.appid);
                     if (rating != null)//get every game in the database that the player owns and we have information for
                     {
-                        gameInfoPlusList.Add(new GameInfoPlus(game, rating));
+                        if(rating.likePercentage > 0 && game.playtime_forever < (4 * 60))
+                        {
+                            gameInfoPlusList.Add(new GameInfoPlus(game, rating));
+                        }
                     }
-                    
                 }
 
+                // Sort remaining list by rating
+                gameInfoPlusList.Sort(new CompareByRatingDescending());
+
+                
+                for(int i = 0; i < 20; i++)
+                {
+                    recommendations.Add(gameInfoPlusList[i]);
+                }
             }
 
-            ViewData["gameList"] = gameInfoPlusList;
+            ViewData["gameList"] = recommendations;
 
-            return View(gameInfoPlusList);
+            return View(recommendations);
 
         }
 
@@ -144,7 +160,7 @@ namespace GroupF.Controllers
         public async Task<long> GetSteamIdFromUserName(String apiKey, String userName, HttpClient client)
         {
 
-            String queryString = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=" + apiKey + "&vanityUrl=" + userName;
+            String queryString = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=" + apiKey + "&vanityUrl=" + userName;
 
             using (var response = await client.GetAsync(queryString))
             {
