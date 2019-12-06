@@ -27,7 +27,7 @@ namespace GroupF.Controllers
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<GameUser> _signInManager;
         private readonly UserManager<GameUser> _userManager;
-        private const int MAX_NEW_RATINGS = 50;
+        private const int MAX_NEW_RATINGS = 20;
 
         public RecommendationController(ApplicationDbContext context, SignInManager<GameUser> signInManager, UserManager<GameUser> userManager)
         {
